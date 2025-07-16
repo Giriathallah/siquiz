@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const user = await getCurrentUser({ redirectIfNotFound: true });
@@ -12,6 +14,7 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
+    //  const { searchParams } = request.nextUrl;
     const myPage = parseInt(searchParams.get("myPage") || "1");
     const otherPage = parseInt(searchParams.get("otherPage") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
