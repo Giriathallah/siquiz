@@ -285,23 +285,24 @@ const SignUpPage: FC = () => {
   const features = [
     {
       icon: Shield,
-      title: "Secure By Design",
-      description:
-        "Your data is protected with the highest security standards.",
+      title: "Dirancang Aman",
+      description: "Data Anda dilindungi dengan standar keamanan tertinggi.",
       gradientFrom: "from-feature-1-start",
       gradientTo: "to-feature-1-end",
     },
     {
       icon: Users,
-      title: "Collaborative Learning",
-      description: "Join a community of learners and grow together.",
+      title: "Belajar Kolaboratif",
+      description:
+        "Bergabunglah dengan komunitas pembelajar dan berkembang bersama.",
       gradientFrom: "from-feature-2-start",
       gradientTo: "to-feature-2-end",
     },
     {
       icon: Zap,
-      title: "Instant Access",
-      description: "Get started in seconds and access content immediately.",
+      title: "Akses Instan",
+      description:
+        "Mulai dalam hitungan detik dan akses konten secara langsung.",
       gradientFrom: "from-feature-3-start",
       gradientTo: "to-feature-3-end",
     },
@@ -311,20 +312,21 @@ const SignUpPage: FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-page-gradient-start via-page-gradient-middle to-page-gradient-end relative overflow-hidden">
       <AnimatedBackground />
       <div className="relative z-10 flex min-h-screen">
-        {/* Left Panel */}
+        {/* Panel Kiri */}
         <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col justify-center p-12 bg-gradient-to-br from-surface-raised/80 to-surface-raised/60 backdrop-blur-sm">
           <div className="max-w-md mx-auto">
             <div className="mb-8">
               <Logo className="mb-6" />
               <h2 className="text-4xl font-bold text-text-strong mb-4 leading-tight">
-                Unlock Your
+                Buka Potensi
                 <span className="block bg-gradient-to-r from-brand-gradient-start to-brand-gradient-end bg-clip-text text-transparent">
-                  Full Potential
+                  Penuh Anda
                 </span>
               </h2>
               <p className="text-text-subtle text-lg leading-relaxed">
-                Join thousands of learners and start your journey with
-                AI-powered tools designed to help you succeed.
+                Bergabunglah dengan ribuan pembelajar dan mulai perjalanan Anda
+                dengan alat bertenaga AI yang dirancang untuk membantu Anda
+                sukses.
               </p>
             </div>
             <div className="space-y-6">
@@ -335,16 +337,16 @@ const SignUpPage: FC = () => {
           </div>
         </div>
 
-        {/* Right Panel (Form) */}
+        {/* Panel Kanan (Formulir) */}
         <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
           <div className="w-full max-w-md">
             <div className="bg-surface-raised/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-border/50 p-8 transform transition-all duration-300 hover:shadow-3xl">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold text-text-strong mb-2">
-                  Create Your Account
+                  Buat Akun Anda
                 </h1>
                 <p className="text-text-subtle">
-                  Start your learning adventure with Siquiz
+                  Mulai petualangan belajar Anda bersama Siquiz
                 </p>
               </div>
 
@@ -364,55 +366,54 @@ const SignUpPage: FC = () => {
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex-1 h-px bg-border"></div>
                 <span className="text-text-subtle text-sm">
-                  or sign up with email
+                  atau daftar dengan email
                 </span>
                 <div className="flex-1 h-px bg-border"></div>
               </div>
 
               <div className="space-y-4">
-                {/* [MODIFIED] Display Server Messages */}
                 <FormAlert type="error" message={error || ""} />
                 <FormAlert type="success" message={message || ""} />
 
                 <FormInput
-                  label="Full Name" // [MODIFIED] Changed label
+                  label="Nama Lengkap"
                   type="text"
-                  name="name" // [MODIFIED] Changed name attribute
-                  value={formData.name} // [MODIFIED]
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Enter your full name"
+                  placeholder="Masukkan nama lengkap Anda"
                   icon={User}
                   required
                 />
                 <FormInput
-                  label="Email Address"
+                  label="Alamat Email"
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter your email address"
+                  placeholder="Masukkan alamat email Anda"
                   icon={Mail}
                   required
                 />
                 <FormInput
-                  label="Password"
+                  label="Kata Sandi"
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Create a strong password"
+                  placeholder="Buat kata sandi yang kuat"
                   icon={Lock}
                   required
                   showPassword={showPassword}
                   onTogglePassword={() => setShowPassword(!showPassword)}
                 />
                 <FormInput
-                  label="Confirm Password"
+                  label="Konfirmasi Kata Sandi"
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  placeholder="Confirm your password"
+                  placeholder="Konfirmasi kata sandi Anda"
                   icon={Lock}
                   required
                   showPassword={showConfirmPassword}
@@ -428,11 +429,11 @@ const SignUpPage: FC = () => {
                   {isPending ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      Creating Account...
+                      Membuat Akun...
                     </>
                   ) : (
                     <>
-                      Sign Up
+                      Daftar
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
@@ -441,12 +442,12 @@ const SignUpPage: FC = () => {
 
               <div className="mt-8 text-center">
                 <p className="text-text-subtle">
-                  Already have an account?{" "}
+                  Sudah punya akun?{" "}
                   <Link
                     href="/sign-in"
                     className="text-brand hover:text-brand-gradient-end font-semibold transition-colors"
                   >
-                    Sign In
+                    Masuk
                   </Link>
                 </p>
               </div>

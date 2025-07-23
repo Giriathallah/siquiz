@@ -6,62 +6,133 @@ import { hashPassword, generateSalt } from "@/lib/auth/passwordHasher";
 async function main() {
   console.log("Memulai proses seeding...");
 
-  const salt = generateSalt();
-
   // Seed Admin User
-  const adminPassword = await hashPassword("asdasdasd", salt);
+  const adminSalt = generateSalt();
+  const adminPassword = await hashPassword("asdasdasd", adminSalt);
   const adminUser = await prisma.user.upsert({
-    where: { email: "admin@gnews.com" },
+    where: { email: "admin@siquiz.com" },
     update: {},
     create: {
       name: "Super Admin",
-      email: "admin@gnews.com",
+      email: "admin@siquiz.com",
       password: adminPassword,
-      salt: salt,
+      salt: adminSalt,
       role: UserRole.admin,
       emailVerified: new Date(),
-      avatarUrl: null,
     },
   });
-  console.log(`Pengguna Admin dibuat: ${adminUser.email}`);
+  console.log(`Pengguna Admin dibuat/diperbarui: ${adminUser.email}`);
 
+  // Seed User Rusty Ryan
+  const userSalt = generateSalt();
+  const userPassword = await hashPassword("password123", userSalt);
+  const rustyUser = await prisma.user.upsert({
+    where: { email: "rustyryan@gmail.com" },
+    update: {},
+    create: {
+      name: "Rusty Ryan",
+      email: "rustyryan@gmail.com",
+      password: userPassword,
+      salt: userSalt,
+      role: UserRole.user,
+      emailVerified: new Date(),
+    },
+  });
+  console.log(`Pengguna Biasa dibuat/diperbarui: ${rustyUser.email}`);
+
+  // Seed Categories
   const categoriesData = [
     {
-      name: "Programming",
-      description: "Pertanyaan seputar bahasa pemrograman dan logika.",
+      name: "Pemrograman",
+      description:
+        "Pertanyaan seputar bahasa pemrograman, algoritma, dan struktur data.",
     },
     {
-      name: "History",
-      description: "Pertanyaan seputar sejarah dunia dan nasional.",
+      name: "Sejarah",
+      description: "Pertanyaan seputar peristiwa sejarah dunia dan nasional.",
     },
     {
-      name: "Science",
-      description: "Pertanyaan seputar ilmu pengetahuan alam dan sosial.",
+      name: "Sains",
+      description:
+        "Pertanyaan seputar ilmu pengetahuan alam (Fisika, Kimia, Biologi).",
     },
     {
-      name: "Mathematics",
+      name: "Matematika",
       description: "Pertanyaan seputar konsep dan rumus matematika.",
     },
-    { name: "General Knowledge", description: "Pertanyaan pengetahuan umum." },
+    {
+      name: "Pengetahuan Umum",
+      description: "Berbagai macam pertanyaan pengetahuan umum.",
+    },
+    {
+      name: "Film & Acara TV",
+      description: "Pertanyaan tentang film, serial TV, aktor, dan sutradara.",
+    },
+    {
+      name: "Musik",
+      description: "Pertanyaan tentang musisi, band, genre, dan sejarah musik.",
+    },
+    {
+      name: "Geografi",
+      description: "Pertanyaan tentang negara, ibu kota, dan fitur geografis.",
+    },
+    {
+      name: "Olahraga",
+      description:
+        "Pertanyaan tentang berbagai cabang olahraga, atlet, dan kompetisi.",
+    },
+    {
+      name: "Sastra",
+      description:
+        "Pertanyaan tentang buku, penulis, dan karya sastra klasik/modern.",
+    },
+    {
+      name: "Seni & Budaya",
+      description:
+        "Pertanyaan tentang seni rupa, seniman, dan budaya dari seluruh dunia.",
+    },
   ];
 
   for (const data of categoriesData) {
     const category = await prisma.category.upsert({
       where: { name: data.name },
-      update: {},
+      update: { description: data.description },
       create: data,
     });
-    console.log(`Kategori dibuat: ${category.name}`);
+    console.log(`Kategori dibuat/diperbarui: ${category.name}`);
   }
 
   // Seed Tags
   const tagsData = [
+    // Pemrograman
     { name: "JavaScript" },
-    { name: "Phyton" },
-    { name: "Web Development" },
-    { name: "World War II" },
-    { name: "Physics" },
-    { name: "Algebra" },
+    { name: "Python" },
+    { name: "Pengembangan Web" },
+    { name: "React" },
+    { name: "Node.js" },
+    { name: "Basis Data" },
+    // Sejarah
+    { name: "Perang Dunia II" },
+    { name: "Romawi Kuno" },
+    { name: "Sejarah Indonesia" },
+    // Sains
+    { name: "Fisika" },
+    { name: "Biologi" },
+    { name: "Kimia" },
+    // Matematika
+    { name: "Aljabar" },
+    { name: "Kalkulus" },
+    { name: "Geometri" },
+    // Geografi
+    { name: "Ibu Kota" },
+    { name: "Asia" },
+    // Olahraga
+    { name: "Sepak Bola" },
+    { name: "Bola Basket" },
+    // Hiburan
+    { name: "Marvel Cinematic Universe" },
+    { name: "Musik Pop" },
+    // Umum
     { name: "Indonesia" },
   ];
 
@@ -71,7 +142,7 @@ async function main() {
       update: {},
       create: data,
     });
-    console.log(`Tag dibuat: ${tag.name}`);
+    console.log(`Tag dibuat/diperbarui: ${tag.name}`);
   }
 
   console.log("Proses seeding selesai.");

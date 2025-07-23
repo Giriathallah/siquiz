@@ -82,13 +82,14 @@ export async function signIn(
 export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
   const { success, data } = signUpSchema.safeParse(unsafeData);
 
-  if (!success) return "Unable to create your account";
+  if (!success)
+    return "Data yang dimasukkan tidak valid. Silakan periksa kembali.";
 
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email },
   });
 
-  if (existingUser) return "Email already in use";
+  if (existingUser) return "Email ini sudah digunakan oleh akun lain.";
 
   try {
     const salt = generateSalt();

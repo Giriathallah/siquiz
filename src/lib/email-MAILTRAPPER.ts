@@ -1,15 +1,15 @@
 // lib/email.ts
 import nodemailer from "nodemailer";
 
-const smtpConfig = {
-  service: "gmail",
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_SERVER_HOST,
+  port: parseInt(process.env.EMAIL_SERVER_PORT || "587"),
+  secure: process.env.EMAIL_SERVER_SECURE === "true",
   auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD, // Ini adalah App Password 16 karakter Anda
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
   },
-};
-
-const transporter = nodemailer.createTransport(smtpConfig);
+});
 
 interface SendVerificationEmailParams {
   to: string;
@@ -284,15 +284,26 @@ export async function sendVerificationEmail({
 
   try {
     await transporter.sendMail({
-      // [UBAH] Menggunakan SMTP_EMAIL sebagai pengirim
-      from: `"SiQuiz" <${process.env.SMTP_EMAIL}>`,
+      from: process.env.EMAIL_FROM,
       to: to,
-      // [UBAH] Memperbaiki subjek email
-      subject: "Verifikasi Email Anda untuk SiQuiz",
+      subject: "🚀 Verifikasi Email Anda untuk GNews - Selamat Datang!",
       html: getVerificationEmailTemplate(verificationUrl),
-      text: `Selamat Datang di SiQuiz! Verifikasi email Anda dengan mengunjungi tautan berikut: ${verificationUrl}`,
+      // Optional: Tambahkan text version untuk client yang tidak support HTML
+      text: `
+Selamat Datang di SiQuiz!
+
+Terima kasih telah mendaftar di SiQuiz. Silakan verifikasi alamat email Anda dengan mengunjungi tautan berikut:
+
+${verificationUrl}
+
+Tautan ini akan kedaluwarsa dalam 24 jam.
+
+Jika Anda tidak mendaftar untuk akun SiQuiz, Anda bisa mengabaikan email ini.
+
+---
+SiQuiz Team
+      `.trim(),
     });
-    console.log(`Verification email sent to ${to}`);
   } catch (error) {
     console.error("Gagal mengirim email verifikasi:", error);
     throw new Error("Gagal mengirim email verifikasi.");
