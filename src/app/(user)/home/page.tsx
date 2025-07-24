@@ -380,7 +380,7 @@ export default function BerandaPage() {
                           {quiz.difficulty}
                         </Badge>
                         <Button size="sm" asChild>
-                          <Link href={`/kuis/${quiz.id}`}>Mulai Kuis</Link>
+                          <Link href={`/kuis/${quiz.id}/take`}>Mulai Kuis</Link>
                         </Button>
                       </div>
                     </CardContent>

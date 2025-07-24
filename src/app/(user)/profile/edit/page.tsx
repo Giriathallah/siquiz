@@ -120,13 +120,11 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="bg-white border-slate-200 shadow-lg">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-slate-900">
-              Edit Profil
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold">Edit Profil</CardTitle>
             <CardDescription>Perbarui informasi profil Anda</CardDescription>
           </CardHeader>
           <CardContent>
@@ -138,12 +136,13 @@ export default function EditProfilePage() {
                 {/* Avatar Upload */}
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
-                    <Avatar className="h-32 w-32 border-4 border-blue-100">
+                    {/* [DIUBAH] Gunakan warna dari variabel tema */}
+                    <Avatar className="h-32 w-32 border-4 border-primary/20">
                       <AvatarImage
                         src={preview || ""}
                         alt={form.watch("name")}
                       />
-                      <AvatarFallback className="bg-blue-500 text-white text-4xl font-bold">
+                      <AvatarFallback className="bg-primary text-primary-foreground text-4xl font-bold">
                         {form.watch("name")?.charAt(0).toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
@@ -151,7 +150,7 @@ export default function EditProfilePage() {
                       <button
                         type="button"
                         onClick={resetImage}
-                        className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 hover:bg-destructive/90"
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -163,10 +162,12 @@ export default function EditProfilePage() {
                     name="avatar"
                     render={({ field }) => (
                       <FormItem className="text-center">
-                        <FormLabel className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                          <Edit className="mr-2 h-4 w-4 inline" />
-                          {preview ? "Ganti Foto" : "Unggah Foto"}
-                        </FormLabel>
+                        <Button asChild variant="default" size="sm">
+                          <FormLabel className="cursor-pointer">
+                            <Edit className="mr-2 h-4 w-4" />
+                            {preview ? "Ganti Foto" : "Unggah Foto"}
+                          </FormLabel>
+                        </Button>
                         <FormControl>
                           <Input
                             type="file"
@@ -184,7 +185,6 @@ export default function EditProfilePage() {
                   />
                 </div>
 
-                {/* Name Field */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -219,7 +219,6 @@ export default function EditProfilePage() {
                   )}
                 />
 
-                {/* Action Buttons */}
                 <div className="flex justify-end gap-4 pt-4">
                   <Button
                     type="button"
