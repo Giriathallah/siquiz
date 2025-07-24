@@ -117,8 +117,12 @@ model Quiz {
   creator            User        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   questions          Question[]
   attempts           QuizAttempt[]
-  likes              QuizLike[]    // [NEW]
-  savedBy            SavedQuiz[]   // [NEW]
+  likes              QuizLike[]    
+  savedBy            SavedQuiz[]   
+
+  @@index([title])
+  @@index([status])      
+  @@index([categoryId]) 
 }
 
 model Question {

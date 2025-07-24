@@ -75,29 +75,36 @@ export async function GET(req: Request) {
     if (sortBy === "popular") orderBy = { attempts: { _count: "desc" } };
     if (sortBy === "duration") orderBy = { duration: "asc" };
 
-    const [quizzes, total] = await prisma.$transaction([
-      prisma.quiz.findMany({
-        skip,
-        take: limit,
-        where,
-        orderBy,
-        include: {
-          creator: {
-            select: { id: true, name: true, avatarUrl: true },
+    const [quizzes, total] = await prisma.$transaction(
+      async (tx) => {
+        const quizzesQuery = tx.quiz.findMany({
+          skip,
+          take: limit,
+          where,
+          orderBy,
+          include: {
+            creator: {
+              select: { id: true, name: true, avatarUrl: true },
+            },
+            category: {
+              select: { id: true, name: true },
+            },
+            tags: {
+              select: { id: true, name: true },
+            },
+            _count: {
+              select: { questions: true, likes: true, attempts: true },
+            },
           },
-          category: {
-            select: { id: true, name: true },
-          },
-          tags: {
-            select: { id: true, name: true },
-          },
-          _count: {
-            select: { questions: true, likes: true, attempts: true },
-          },
-        },
-      }),
-      prisma.quiz.count({ where }),
-    ]);
+        });
+        const totalQuery = tx.quiz.count({ where });
+
+        return await Promise.all([quizzesQuery, totalQuery]);
+      },
+      {
+        timeout: 10000, // Timeout 10 detik
+      }
+    );
 
     const quizIds = quizzes.map((quiz) => quiz.id);
 

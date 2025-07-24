@@ -68,49 +68,122 @@ export async function GET() {
       LIMIT 6
     `;
 
+    // const [
+    //   totalQuizzes,
+    //   totalUsers,
+    //   totalAttempts,
+    //   categories,
+    //   newestQuizzes,
+    //   popularCategories, // [BARU]
+    //   popularTags, // [BARU]
+    // ] = await prisma.$transaction(
+    //   [
+    //     prisma.quiz.count({ where: { status: "PUBLISHED" } }),
+    //     prisma.user.count(),
+    //     prisma.quizAttempt.count(),
+    //     prisma.category.findMany({
+    //       select: { id: true, name: true },
+    //       orderBy: { name: "asc" },
+    //     }),
+    //     prisma.quiz.findMany({
+    //       where: { status: "PUBLISHED" },
+    //       orderBy: { createdAt: "desc" },
+    //       take: 4,
+    //       select: {
+    //         id: true,
+    //         title: true,
+    //         duration: true,
+    //         difficulty: true,
+    //         _count: { select: { questions: true } },
+    //       },
+    //     }),
+    //     // Query untuk Kategori Populer
+    //     prisma.category.findMany({
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         _count: { select: { quizzes: true } },
+    //       },
+    //       orderBy: { quizzes: { _count: "desc" } },
+    //       take: 5,
+    //     }),
+    //     // Query untuk Tag Populer
+    //     prisma.tag.findMany({
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         _count: { select: { quizzes: true } },
+    //       },
+    //       orderBy: { quizzes: { _count: "desc" } },
+    //       take: 7,
+    //     }),
+    //   ],
+    //   {
+    //     timeout: 15000, // Beri waktu 15 detik
+    //   }
+    // );
+
+    // --- 3. FORMAT DAN GABUNGKAN SEMUA DATA UNTUK RESPONSE ---
+
     const [
       totalQuizzes,
       totalUsers,
       totalAttempts,
       categories,
       newestQuizzes,
-      popularCategories, // [BARU]
-      popularTags, // [BARU]
-    ] = await prisma.$transaction([
-      prisma.quiz.count({ where: { status: "PUBLISHED" } }),
-      prisma.user.count(),
-      prisma.quizAttempt.count(),
-      prisma.category.findMany({
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      }),
-      prisma.quiz.findMany({
-        where: { status: "PUBLISHED" },
-        orderBy: { createdAt: "desc" },
-        take: 4,
-        select: {
-          id: true,
-          title: true,
-          duration: true,
-          difficulty: true,
-          _count: { select: { questions: true } },
-        },
-      }),
-      // Query untuk Kategori Populer
-      prisma.category.findMany({
-        select: { id: true, name: true, _count: { select: { quizzes: true } } },
-        orderBy: { quizzes: { _count: "desc" } },
-        take: 5,
-      }),
-      // Query untuk Tag Populer
-      prisma.tag.findMany({
-        select: { id: true, name: true, _count: { select: { quizzes: true } } },
-        orderBy: { quizzes: { _count: "desc" } },
-        take: 7,
-      }),
-    ]);
+      popularCategories,
+      popularTags,
+    ] = await prisma.$transaction(
+      async (tx) => {
+        // 1. Kumpulkan semua query di dalam sebuah array, gunakan 'tx' bukan 'prisma'
+        const allQueries = [
+          tx.quiz.count({ where: { status: "PUBLISHED" } }),
+          tx.user.count(),
+          tx.quizAttempt.count(),
+          tx.category.findMany({
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+          }),
+          tx.quiz.findMany({
+            where: { status: "PUBLISHED" },
+            orderBy: { createdAt: "desc" },
+            take: 4,
+            select: {
+              id: true,
+              title: true,
+              duration: true,
+              difficulty: true,
+              _count: { select: { questions: true } },
+            },
+          }),
+          tx.category.findMany({
+            select: {
+              id: true,
+              name: true,
+              _count: { select: { quizzes: true } },
+            },
+            orderBy: { quizzes: { _count: "desc" } },
+            take: 5,
+          }),
+          tx.tag.findMany({
+            select: {
+              id: true,
+              name: true,
+              _count: { select: { quizzes: true } },
+            },
+            orderBy: { quizzes: { _count: "desc" } },
+            take: 7,
+          }),
+        ];
 
-    // --- 3. FORMAT DAN GABUNGKAN SEMUA DATA UNTUK RESPONSE ---
+        // 2. Jalankan semuanya secara paralel dengan Promise.all
+        return await Promise.all(allQueries);
+      },
+      {
+        timeout: 15000, // Opsi timeout sekarang valid
+      }
+    );
+
     const formattedPopularQuizzes = popularQuizzesRaw.map((quiz) => ({
       id: quiz.id,
       title: quiz.title,

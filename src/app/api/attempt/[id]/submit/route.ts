@@ -110,38 +110,45 @@ export async function POST(
 
     const finalScore = totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0;
 
-    // Transaksi untuk menyimpan semua jawaban dan mengupdate attempt
-    await prisma.$transaction(async (tx) => {
-      for (const record of userAnswerRecords) {
-        await tx.userAnswer.upsert({
-          where: {
-            attemptId_questionId: {
-              attemptId: record.attemptId,
-              questionId: record.questionId,
+    await prisma.$transaction(
+      async (tx) => {
+        const upsertPromises = userAnswerRecords.map((record) =>
+          tx.userAnswer.upsert({
+            where: {
+              attemptId_questionId: {
+                attemptId: record.attemptId,
+                questionId: record.questionId,
+              },
             },
-          },
-          update: {
-            selectedOptionId: record.selectedOptionId,
-            shortAnswer: record.shortAnswer,
-            isCorrect: record.isCorrect,
-          },
-          create: record,
-        });
-      }
+            update: {
+              selectedOptionId: record.selectedOptionId,
+              shortAnswer: record.shortAnswer,
+              isCorrect: record.isCorrect,
+            },
+            create: record,
+          })
+        );
 
-      await tx.quizAttempt.update({
-        where: { id: attemptId },
-        data: {
-          status: "COMPLETED",
-          score: finalScore,
-          completedAt: new Date(),
-        },
-      });
-      await tx.quiz.update({
-        where: { id: attempt.quizId },
-        data: { takesCount: { increment: 1 } },
-      });
-    });
+        await Promise.all(upsertPromises);
+
+        await tx.quizAttempt.update({
+          where: { id: attemptId },
+          data: {
+            status: "COMPLETED",
+            score: finalScore,
+            completedAt: new Date(),
+          },
+        });
+
+        await tx.quiz.update({
+          where: { id: attempt.quizId },
+          data: { takesCount: { increment: 1 } },
+        });
+      },
+      {
+        timeout: 15000,
+      }
+    );
 
     const resultData = await prisma.quizAttempt.findUnique({
       where: { id: attemptId },

@@ -173,10 +173,6 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="border-border">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            View Analytics
-          </Button>
           <Link href="/admin/quizzes/create">
             <Button className="bg-gradient-to-r from-cta-gradient-start via-cta-gradient-middle to-cta-gradient-end hover:opacity-90 transition-opacity">
               <Plus className="h-4 w-4 mr-2" />
