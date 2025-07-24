@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // Mock data sesuai dengan Prisma schema
 
@@ -176,7 +177,8 @@ export default function TakeQuizPage() {
       setCurrentView("quiz");
     } catch (error) {
       console.error(error);
-      alert("Gagal memulai kuis. Silakan coba lagi.");
+      // alert("Gagal memulai kuis. Silakan coba lagi.");
+      toast.error("Gagal memulai kuis. Silakan coba lagi.");
     } finally {
       setStatus("idle");
     }
@@ -191,7 +193,8 @@ export default function TakeQuizPage() {
       setCurrentView("results");
     } catch (error) {
       console.error(error);
-      alert("Gagal mengirim jawaban. Silakan coba lagi.");
+      // alert("Gagal mengirim jawaban. Silakan coba lagi.");
+      toast.error("Gagal mengirim jawaban. Silakan coba lagi.");
     } finally {
       setStatus("idle");
     }

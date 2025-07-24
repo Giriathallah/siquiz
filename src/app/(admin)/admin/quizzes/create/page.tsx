@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { Difficulty, QuestionType, QuizStatus } from "@/generated/prisma";
 import type { ZodIssue } from "zod";
+import { toast } from "sonner";
 
 // Helper & Komponen UI
 import { useDebounce } from "@/hooks/useDebounce";
@@ -401,7 +402,8 @@ const CreateQuizPage = () => {
         return;
       }
 
-      alert("Quiz created successfully!");
+      // alert("Quiz created successfully!");
+      toast.success("Quiz created successfully!");
       router.push(`/admin/quizzes/`);
     } catch (err) {
       console.error("Failed to submit quiz:", err);

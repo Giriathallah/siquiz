@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { Difficulty, QuestionType, QuizStatus } from "@/generated/prisma";
 import type { ZodIssue } from "zod";
+import { toast } from "sonner";
 
 // --- Import komponen & helper yang sama seperti di halaman create ---
 import { useDebounce } from "@/hooks/useDebounce";
@@ -331,9 +332,11 @@ const EditQuizPage = () => {
         return;
       }
 
-      alert("Quiz updated successfully!");
+      // alert("Quiz updated successfully!");
+      toast.success("Quiz updated successfully!");
       router.push(`/admin/quizzes`); // Redirect setelah berhasil
     } catch (err) {
+      toast.error("Failed to update quiz ");
       console.error("Failed to submit quiz:", err);
       setErrors({ submit: "A network or unexpected error occurred." });
     } finally {

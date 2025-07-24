@@ -101,9 +101,10 @@ const MyQuizPage = () => {
       setDeleteDialogOpen(false);
       toast.success("kuis Berhasil dihapus");
     } catch (error: any) {
-      toast.success("kuis Gagal dihapus");
+      toast.error("kuis Gagal dihapus");
       // Tampilkan pesan error ke pengguna
-      alert(`Error: ${error.message}`);
+      // alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     } finally {
       setIsDeleting(false); // Selesai loading
       setQuizToDelete(null);

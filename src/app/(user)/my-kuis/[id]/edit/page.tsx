@@ -36,6 +36,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // --- Definisi Tipe Data Form (sama seperti halaman create) ---
 type Category = { id: string; name: string };
@@ -331,7 +332,8 @@ const EditQuizPage = () => {
         return;
       }
 
-      alert("Quiz updated successfully!");
+      // alert("Quiz updated successfully!");
+      toast.success("Kuis berhasil diubah");
       router.push(`/my-kuis`); // Redirect setelah berhasil
     } catch (err) {
       console.error("Failed to submit quiz:", err);
