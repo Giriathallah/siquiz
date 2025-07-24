@@ -437,30 +437,6 @@ export default function BerandaPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Card Aksi Cepat (bisa dibiarkan seperti ini) */}
-          <Card className="bg-surface-raised border-border/40">
-            <CardHeader>
-              <CardTitle className="text-lg">Aksi Cepat</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button
-                asChild
-                className="w-full bg-gradient-to-r from-cta-gradient-start to-cta-gradient-end"
-              >
-                <Link href="/kuis">
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Jelajahi Semua Kuis
-                </Link>
-              </Button>
-              <Button variant="outline" asChild className="w-full">
-                <Link href="/auth/login">
-                  <Trophy className="h-4 w-4 mr-2" />
-                  Lihat Skor Saya
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
