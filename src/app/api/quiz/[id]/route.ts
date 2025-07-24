@@ -107,39 +107,44 @@ export async function PUT(
 
     const { tags, questions, ...quizData } = validation.data;
 
-    const updatedQuiz = await prisma.$transaction(async (tx) => {
-      await tx.question.deleteMany({ where: { quizId: params.id } });
-      const quizResult = await tx.quiz.update({
-        where: { id: params.id },
-        data: {
-          ...quizData,
-          tags: tags
-            ? {
-                set: [],
-                connectOrCreate: tags.map((tag) => ({
-                  where: { name: tag.name },
-                  create: { name: tag.name },
-                })),
-              }
-            : undefined,
-          questions: {
-            create: questions.map((q) => ({
-              questionText: q.questionText,
-              questionType: q.questionType,
-              points: q.points,
-              explanation: q.explanation,
-              options: {
-                create: q.options.map((opt) => ({
-                  optionText: opt.optionText,
-                  isCorrect: opt.isCorrect,
-                })),
-              },
-            })),
+    const updatedQuiz = await prisma.$transaction(
+      async (tx) => {
+        await tx.question.deleteMany({ where: { quizId: params.id } });
+        const quizResult = await tx.quiz.update({
+          where: { id: params.id },
+          data: {
+            ...quizData,
+            tags: tags
+              ? {
+                  set: [],
+                  connectOrCreate: tags.map((tag) => ({
+                    where: { name: tag.name },
+                    create: { name: tag.name },
+                  })),
+                }
+              : undefined,
+            questions: {
+              create: questions.map((q) => ({
+                questionText: q.questionText,
+                questionType: q.questionType,
+                points: q.points,
+                explanation: q.explanation,
+                options: {
+                  create: q.options.map((opt) => ({
+                    optionText: opt.optionText,
+                    isCorrect: opt.isCorrect,
+                  })),
+                },
+              })),
+            },
           },
-        },
-      });
-      return quizResult;
-    });
+        });
+        return quizResult;
+      },
+      {
+        timeout: 10000,
+      }
+    );
 
     return NextResponse.json(updatedQuiz);
   } catch (error) {
