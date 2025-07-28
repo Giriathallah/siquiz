@@ -18,12 +18,12 @@ export function createGoogleOAuthClient() {
     },
     userInfo: {
       schema: z.object({
-        sub: z.string(), // Google uses 'sub' as the unique user ID
+        id: z.string(), // Google uses 'sub' as the unique user ID
         name: z.string(),
         email: z.string().email(),
       }),
       parser: (user) => ({
-        id: user.sub,
+        id: user.id,
         name: user.name,
         email: user.email,
       }),
